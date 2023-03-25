@@ -1,8 +1,6 @@
 import { DecisionTree } from "./libraries/decisiontree.js"
 import { VegaTree } from "./libraries/vegatree.js"
 
-// import { saveAs } from './node_modules/file-saver/src/FileSaver.js';
-
 // Prediction stuff
 let gotRight = 0;
 let predictGoodDelayed = 0
@@ -11,7 +9,6 @@ let predictGoodOnTime = 0
 let predictWrongOnTime = 0
 
 // Import data and state ignored and training labels
-
 // const csvFile = "./data/airlines_delay_500.csv"
 const csvFile = "./data/airlines_delay_2000.csv"
 // const csvFile = "./data/airlines_delay.csv"
@@ -36,9 +33,7 @@ function loadData() {
     })
 }
 
-//
 // MACHINE LEARNING - Decision Tree
-//
 function trainModel(data) {
     //shuffle data to make sure the data is trustworthy
     data.sort(() => (Math.random() - 0.5))
@@ -58,7 +53,7 @@ function trainModel(data) {
     let visual = new VegaTree('#view', 800, 400, decisionTree.toJSON())
     
 
-    // todo : bereken de accuracy met behulp van alle test data
+    //bereken de accuracy met behulp van alle test data
     function testFlight(flight) {
         // kopie van flight maken, zonder het "Class" label
         const flightWithoutLabel = { ...flight }
