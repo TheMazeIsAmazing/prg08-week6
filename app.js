@@ -1,6 +1,8 @@
 import { DecisionTree } from "./libraries/decisiontree.js"
 import { VegaTree } from "./libraries/vegatree.js"
 
+// import { saveAs } from './node_modules/file-saver/src/FileSaver.js';
+
 // Prediction stuff
 let gotRight = 0;
 let predictGoodDelayed = 0
@@ -8,25 +10,23 @@ let predictWrongDelayed = 0
 let predictGoodOnTime = 0
 let predictWrongOnTime = 0
 
-//
-// DATA
-//
+// Import data and state ignored and training labels
+
 // const csvFile = "./data/airlines_delay_500.csv"
-const csvFile = "./data/airlines_delay.csv"
+const csvFile = "./data/airlines_delay_2000.csv"
+// const csvFile = "./data/airlines_delay.csv"
 const trainingLabel = "Class"  
 const ignored = [
     "Flight", 
-    "Time",
-    "Length",
+    // "Time",
+    // "Length",
     // "Airline",
     // "AirportFrom",
     // "AirportTo",
-    "DayOfWeek"
+    // "DayOfWeek"
 ]  
 
-//
-// laad csv data als json
-//
+//load the csv data as json
 function loadData() {
     Papa.parse(csvFile, {
         download: true,
@@ -40,32 +40,22 @@ function loadData() {
 // MACHINE LEARNING - Decision Tree
 //
 function trainModel(data) {
-    console.log(data);
     //shuffle data to make sure the data is trustworthy
     data.sort(() => (Math.random() - 0.5))
+    
     //prepare test and trainingdata
     let trainData = data.slice(0, Math.floor(data.length * 0.8))
     let testData = data.slice(Math.floor(data.length * 0.8) + 1)
-    console.log("testData", testData);
+    
     // maak het algoritme aan
-    console.log('The decisionTree is loading... Please wait up to 6 minutes...')
-
     let decisionTree = new DecisionTree({
         ignoredAttributes: ignored,
         trainingSet: trainData,
         categoryAttr: trainingLabel,
-        maxTreeDepth: 35
+        maxTreeDepth: 50
     })
-
-    // Teken de boomstructuur - DOM element, breedte, hoogte, decision tree
-    console.log('Making the decisionTree visual...')
-    
+   
     let visual = new VegaTree('#view', 800, 400, decisionTree.toJSON())
-
-
-    //Maak een prediction met een sample uit de testdata
-    console.log('Making some predictions...')
-
     
 
     // todo : bereken de accuracy met behulp van alle test data
@@ -76,28 +66,22 @@ function trainModel(data) {
     
         // prediction
         let prediction = decisionTree.predict(flightWithoutLabel)
-        console.log(`flightPredictionNoLabel: ${prediction}`);
-        
-        console.log(flight);
+
         // vergelijk de prediction met het echte label
         if (prediction == flight.Class) {
             if (prediction == 1) {
-                //topleft
                 //top-predictdelay_left-actualdelay
                 predictGoodDelayed++
             } else {
-                //bottomright
-                //top-predictdelay_left-actualontime
+                //top-predictontime_left-actualontime
                 predictGoodOnTime++
             }
             gotRight++
         } else {
             if (prediction == 0) {
-                //topright
                 //top-predictdelay_left-actualontime
                 predictWrongDelayed++
             } else {
-                //bottomleft
                 //top-predictontime_left-actualdelay
                 predictWrongOnTime++
             }
@@ -105,17 +89,27 @@ function trainModel(data) {
     }
     
     for (const flight of testData) {
-        console.log("Flight", flight);
         testFlight(flight)
     }
 
-    console.log(`Accuracy: ${gotRight / testData.length} - Got Right: ${gotRight}; Out of total: ${testData.length}`)
     document.getElementById('accuracy').innerHTML = `Accuracy: ${gotRight / testData.length} - Got Right: ${gotRight}; Out of total: ${testData.length}`
 
     document.getElementById('top-predictdelay_left-actualdelay').innerHTML = predictGoodDelayed
     document.getElementById('top-predictdelay_left-actualontime').innerHTML = predictWrongDelayed
     document.getElementById('top-predictontime_left-actualdelay').innerHTML = predictWrongOnTime
     document.getElementById('top-predictontime_left-actualontime').innerHTML = predictGoodOnTime
+
+        
+    document.getElementById('saveButton').addEventListener('click', () => {
+        let fileName = 'model.json';
+
+        let fileToSave = new Blob([decisionTree.stringify()], {
+            type: 'application/json',
+            name: fileName
+        });
+
+        saveAs(fileToSave, fileName);
+    })
 }
 
 

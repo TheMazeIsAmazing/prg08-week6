@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="style.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/vega@5"></script>
+    <script defer src="./node_modules/file-saver/src/FileSaver.js" type="module"></script>
     <script defer src="app.js" type="module"></script>
     <title>Decision Tree Inleveropdracht</title>
 </head>
@@ -35,5 +36,7 @@
             </tr>
         </table>
     </div>
+    <div><button id="saveButton">Save the model!</button></div>
+    <div>Data Source: <a href="https://www.kaggle.com/datasets/ulrikthygepedersen/airlines-delay">Airlines Delay @ Kaggle</a></div>
   </body>
 </html>
