@@ -10,8 +10,8 @@ let predictWrongOnTime = 0
 
 // Import data and state ignored and training labels
 // const csvFile = "./data/airlines_delay_500.csv"
-// const csvFile = "./data/airlines_delay_2000.csv"
-const csvFile = "./data/airlines_delay.csv"
+const csvFile = "./data/airlines_delay_2000.csv"
+// const csvFile = "./data/airlines_delay.csv"
 const trainingLabel = "Class"  
 const ignored = [
     "Flight", 
