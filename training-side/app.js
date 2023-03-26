@@ -10,8 +10,8 @@ let predictWrongOnTime = 0
 
 // Import data and state ignored and training labels
 // const csvFile = "./data/airlines_delay_500.csv"
-const csvFile = "./data/airlines_delay_2000.csv"
-// const csvFile = "./data/airlines_delay.csv"
+// const csvFile = "./data/airlines_delay_2000.csv"
+const csvFile = "./data/airlines_delay.csv"
 const trainingLabel = "Class"  
 const ignored = [
     "Flight", 
@@ -39,15 +39,15 @@ function trainModel(data) {
     data.sort(() => (Math.random() - 0.5))
     
     //prepare test and trainingdata
-    let trainData = data.slice(0, Math.floor(data.length * 0.8))
-    let testData = data.slice(Math.floor(data.length * 0.8) + 1)
+    let trainData = data.slice(0, Math.floor(data.length * 0.9))
+    let testData = data.slice(Math.floor(data.length * 0.9) + 1)
     
     // maak het algoritme aan
     let decisionTree = new DecisionTree({
         ignoredAttributes: ignored,
         trainingSet: trainData,
         categoryAttr: trainingLabel,
-        maxTreeDepth: 50
+        maxTreeDepth: 40
     })
    
     let visual = new VegaTree('#view', 800, 400, decisionTree.toJSON())
@@ -96,7 +96,7 @@ function trainModel(data) {
 
         
     document.getElementById('saveButton').addEventListener('click', () => {
-        let fileName = 'model.json';
+        let fileName = `model-acc:${gotRight / testData.length}.json`;
 
         let fileToSave = new Blob([decisionTree.stringify()], {
             type: 'application/json',
